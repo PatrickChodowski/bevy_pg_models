@@ -1,0 +1,35 @@
+[package]
+name = "bevy_pg_models"
+version = "1.0.0"
+edition = "2021"
+description = "PG (PatchGames) Models to be used with Bevy"
+license = "MIT OR Apache-2.0"
+
+[dependencies]
+bevy = { version = "0.14.0-rc.4", default-features = false,  features = [
+    "animation",
+    "bevy_asset",
+    "bevy_gilrs",
+    "bevy_scene",
+    "bevy_state",
+    "bevy_winit",
+    "bevy_core_pipeline",
+    "bevy_pbr",
+    "bevy_gltf",
+    "bevy_render",
+    "bevy_sprite",
+    "bevy_text",
+    "bevy_ui",
+    "png",
+    "hdr",
+    "x11",
+    "bevy_gizmos",
+    "multi_threaded",
+    "tonemapping_luts",
+    "default_font",
+    "webgl2",
+    "file_watcher"
+] }
+bevy_common_assets = {git="https://github.com/NiklasEi/bevy_common_assets", branch="bevy_main", default-features=false, features=["json"]}
+rand = "0.8.5"
+serde = "1.0.203"
