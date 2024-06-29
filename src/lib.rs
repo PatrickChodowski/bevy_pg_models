@@ -116,7 +116,8 @@ struct LoadedDataHandles {
 #[derive(Serialize, Deserialize, Clone, Debug, bevy::asset::Asset, bevy::reflect::TypePath, Eq, PartialEq, Hash, Copy)]
 pub enum MLib {
     BlueCar,
-    RedHouse
+    RedHouse,
+    YellowHouse
 }
 
 fn process_models(
@@ -131,8 +132,6 @@ fn process_models(
     let mut assets_mesh_map: HashMap<String, Handle<Gltf>> = HashMap::new();
     for (gltf_id, _gltf) in gltfs.assets_gltf.iter(){
         let gltf_handle = ass.get_id_handle(gltf_id).unwrap();
-        // :D
-        info!("{}", gltf_id);
         let mesh_name = ass.get_path(gltf_id)
                            .unwrap()
                            .to_string()
@@ -227,22 +226,25 @@ impl Models {
         commands: &mut Commands,
         mlib:     &MLib, 
         gltfs:    &mut GLTFS,
-    ){
+        loc:      Vec3
+    ) -> Option<Entity>{
 
         if let Some(gltf_data) = self.extract_gltf(mlib, None, gltfs){
-            let ent: Entity = commands.spawn((
+            let ent: Entity = commands.spawn(
                 PbrBundle {
                     mesh:       gltf_data.mesh,
                     material:   gltf_data.mat,
                     transform: Transform {
-                        translation: Vec3::splat(0.0),
+                        translation: loc,
                         scale:       Vec3::splat(0.5),
                         ..default()
                     },
                     ..default()
-                },
-            )).id();
+                }
+            ).id();
+            return Some(ent);
         }
+        return None;
     }
 
 
@@ -311,7 +313,7 @@ impl Models {
                                                     .expect(&format!(" assets_gltfmesh expected {}, but didnt find it", md.model_path));
                 }
                 let mesh: Handle<Mesh> = gltf_mesh.primitives[0].mesh.clone();
-                let mat: Handle<StandardMaterial> = gltf_mesh.primitives[0].material.clone().unwrap();
+                let mat:  Handle<StandardMaterial> = gltf_mesh.primitives[0].material.clone().unwrap();
                 let aabb: Aabb = gltfs.assets_mesh.get(&mesh).unwrap().compute_aabb().unwrap();
 
                 return Some(GltfData { mesh, mat, aabb });
